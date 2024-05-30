@@ -276,7 +276,7 @@ struct Trigger {
 		}
 		else {
 			// LOW to HIGH
-			if (in >= 1.0f) {
+			if (in >= 0.9f) {
 				state = true;
 				return true;
 			}
