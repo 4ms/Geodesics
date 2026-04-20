@@ -129,7 +129,7 @@ struct Fate : Module {
 		int numClocks = inputs[CLOCK_INPUT].getChannels();
 		int numChan0 = inputs[MAIN_INPUTS + 0].getChannels();
 		int numChan1 = inputs[MAIN_INPUTS + 1].getChannels();	
-		int numChan = std::max(numClocks, std::max(numChan0, numChan1));
+		int numChan = std::min(PORT_MAX_CHANNELS, std::max(numClocks, std::max(numChan0, numChan1)));
 
 		// user inputs
 		if (refresh.processInputs()) {

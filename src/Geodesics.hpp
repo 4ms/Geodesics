@@ -31,6 +31,7 @@ extern Model *modelEnergy;
 extern Model *modelDarkEnergy;
 extern Model *modelTorus;
 extern Model *modelFate;
+extern Model *modelTwinParadox;
 extern Model *modelBlankLogo;
 extern Model *modelBlankInfo;
 
@@ -41,6 +42,10 @@ extern Model *modelBlankInfo;
 static constexpr float clockIgnoreOnResetDuration = 0.001f;// disable clock on powerup and reset for 1 ms (so that the first step plays)
 
 static const float blurRadiusRatio = 0.06f;
+
+static const NVGcolor GEO_RED2 = nvgRGB(0xff, 0x0d, 0x52);
+static const NVGcolor GEO_GREEN2 = nvgRGB(0x3d, 0xff, 0xaf);
+static const NVGcolor GEO_VIOLET = nvgRGB(0xb1, 0xa4, 0xff);
 
 
 // Variations on existing knobs, lights, etc
@@ -97,6 +102,20 @@ struct GeoKnob : DynamicSVGKnob {
 		addFrameFgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/Knob-WL_fg.svg")));
 		addFrameFgAlt(asset::plugin(pluginInstance, "res/DarkMatter/Knob-DM_fg.svg"));
 		
+		shadow->blurRadius = box.size.y * blurRadiusRatio;
+	}
+};
+
+struct GeoKnobInf : DynamicSVGKnob {
+	GeoKnobInf() {
+		minAngle = -0.73 * float(M_PI);
+		maxAngle = 0.73 * float(M_PI);
+		addFrameAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/KnobInf-WL.svg")));
+		addFrameAlt(asset::plugin(pluginInstance, "res/DarkMatter/KnobInf-DM.svg"));
+		addFrameBgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/KnobInf-WL.svg")));
+		addFrameBgAlt(asset::plugin(pluginInstance, "res/DarkMatter/Knob-DM_bg.svg"));
+		addFrameFgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/Knob-WL_fg.svg")));
+		addFrameFgAlt(asset::plugin(pluginInstance, "res/DarkMatter/Knob-DM_fg.svg"));
 		shadow->blurRadius = box.size.y * blurRadiusRatio;
 	}
 };
@@ -204,6 +223,18 @@ struct GeoBlueYellowLight : GeoGrayModuleLight {
 		addBaseColor(SCHEME_YELLOW);
 	}
 };
+struct GeoWhiteRedLight : GeoGrayModuleLight {
+	GeoWhiteRedLight() {
+		addBaseColor(SCHEME_WHITE);
+		addBaseColor(GEO_RED2);
+	}
+};
+struct GeoVioletGreen2Light : GeoGrayModuleLight {
+	GeoVioletGreen2Light() {
+		addBaseColor(GEO_VIOLET);
+		addBaseColor(GEO_GREEN2);
+	}
+};
 
 struct GeoBlueYellowWhiteLight : GeoGrayModuleLight {
 	GeoBlueYellowWhiteLight() {
@@ -276,7 +307,7 @@ struct Trigger {
 		}
 		else {
 			// LOW to HIGH
-			if (in >= 1.0f) {
+			if (in >= 0.9f) {
 				state = true;
 				return true;
 			}
@@ -284,6 +315,49 @@ struct Trigger {
 		return false;
 	}	
 };	
+
+struct TriggerRiseFall {
+	bool state = false;
+	bool initialized = false;
+
+	void reset() {
+		state = false;
+		initialized = false;
+	}
+
+	// Returns 1 on rising edge, -1 on falling edge, 0 otherwise.
+	int process(float in) {
+		const bool high = in >= 0.9f;
+		const bool low = in <= 0.1f;
+
+		// Latch the initial level without generating a synthetic edge.
+		if (!initialized) {
+			initialized = true;
+			if (high) {
+				state = true;
+			}
+			else if (low) {
+				state = false;
+			}
+			return 0;
+		}
+
+		if (state) {
+			if (low) {
+				state = false;
+				return -1;
+			}
+		}
+		else {
+			if (high) {
+				state = true;
+				return 1;
+			}
+		}
+
+		return 0;
+	}
+};
 
 
 struct HoldDetect {
