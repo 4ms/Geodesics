@@ -112,7 +112,7 @@ struct GeoKnobInf : DynamicSVGKnob {
 		maxAngle = 0.73 * float(M_PI);
 		addFrameAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/KnobInf-WL.svg")));
 		addFrameAlt(asset::plugin(pluginInstance, "res/DarkMatter/KnobInf-DM.svg"));
-		addFrameBgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/KnobInf-WL_bg.svg")));
+		addFrameBgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/KnobInf-WL.svg")));
 		addFrameBgAlt(asset::plugin(pluginInstance, "res/DarkMatter/Knob-DM_bg.svg"));
 		addFrameFgAll(APP->window->loadSvg(asset::plugin(pluginInstance, "res/WhiteLight/Knob-WL_fg.svg")));
 		addFrameFgAlt(asset::plugin(pluginInstance, "res/DarkMatter/Knob-DM_fg.svg"));
