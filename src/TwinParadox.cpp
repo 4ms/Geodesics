@@ -1142,9 +1142,9 @@ struct TwinParadoxWidget : ModuleWidget {
 		BpmDisplay() {
 			fontPath = asset::plugin(pluginInstance, "res/fonts/adventpro-bold.ttf");
 			// fontPath = asset::system("res/fonts/Nunito-Bold.ttf");
-			textPos = Vec(24.4f, 16.4f);
+			textPos = Vec(22.4f, 16.4f);
 			//bgText = "888";
-			fontSize = 14;
+			fontSize = 12;
 			module = nullptr;
 		}
 		
